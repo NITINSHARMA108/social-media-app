@@ -8,12 +8,13 @@ const Post = function({useremail,img,content,comments,likes,postId,profile,s}) {
     const x=getCookie();
     const [liked,setliked]=useState(false);
     const [buttonClicked,setButtonclicked]=useState(false);
+
     const plusLike = async (e,postId) =>{
         e.preventDefault();
         await addLike(postId,x);
         setButtonclicked(true);
         
-        // window.location.reload();
+        window.location.reload();
     }
   
     const bookMarkAdded = async(e)=>{
@@ -48,7 +49,9 @@ const Post = function({useremail,img,content,comments,likes,postId,profile,s}) {
 
     const handleunlike=async()=>{
         const response=await unlikePost(postId,x);
-        setButtonclicked(true);
+        setButtonclicked(false);
+        window.location.reload();
+        
     }
     useEffect(()=>{
         checkliked();
