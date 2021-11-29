@@ -59,7 +59,7 @@ const SignUp = function() {
        // console.log(response);
 
         if(!response){
-            alert('user already exists');
+            alert('Some error occured');
             
         }
         else

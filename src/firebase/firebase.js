@@ -29,10 +29,13 @@ const db=getFirestore();
 
 async function writeUserData( userdata) {
   const db = getFirestore();
- 
+  let error=false;
   const docRef = doc(db, "user",userdata.email);
-  const docSnap = await getDoc(docRef);
-
+  const docSnap = await getDoc(docRef).catch((err)=>{error=true});
+  if(error)
+  {
+    return false;
+  }
   if (docSnap.exists()) {
     console.log("Document data:", docSnap.data());
     return false;
@@ -40,28 +43,42 @@ async function writeUserData( userdata) {
     // doc.data() will be undefined in this case
   console.log("No such document!");
   const response =await setDoc(doc(db, "user", userdata.email), 
-    userdata);
+    userdata).catch((err)=>{error=true})
+  if(error)
+  {
+    return false;
+  }
   return true;
 }
 
 async function getTweets(){
   
   const datastore = [];
-  const querySnapshot = await getDocs(collection(db, "tweets"));
+  let error=false;
+  const querySnapshot = await getDocs(collection(db, "tweets")).catch((err)=>{error=true});
+  if(error)
+  {
+    return false;
+  }
   // console.log(querySnapshot);
   querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
+    
     datastore.push(doc.data());
-    // console.log(doc.id, " => ", doc.data());
+    
   });
-  // console.log(datastore);
+  
   return datastore;
 }
 
 async function postTweets(object){
   // const db = getFirestore()
+  let error=false;
   const tempdocRef=doc(db,"user",object.useremail);
-  const tempDocSnap=await getDoc(tempdocRef);
+  const tempDocSnap=await getDoc(tempdocRef).catch((err)=>{error=true})
+  if(error)
+  {
+    return false;
+  }
   if(tempDocSnap.exists())
   {
     const image=tempDocSnap.data().profile;
@@ -77,26 +94,35 @@ async function postTweets(object){
     });
     return response;
   }
-  return null;
+  return false;
  
 }
 
 async function getUsers(){
-  
-  const queryresult= await getDocs(collection(db,"user"));
-  const users=[];
-  queryresult.forEach((element)=>{
+  let error=false;
+  const queryresult= await getDocs(collection(db,"user")).catch((err)=>{error=true});
+  if(error)
+  {
+    return false;
+  }
+    const users=[];
+    queryresult.forEach((element)=>{
     users.push(element.data());
   })
-  console.log(users);
+  
   return users;
 
 
 }
 
 async function getUser(email){
+  let error=false;
   const docRef=doc(db,"user",email);
-  const docSnap=await getDoc(docRef);
+  const docSnap=await getDoc(docRef).catch((err)=>{error=true});
+  if(error)
+  {
+    return false;
+  }
   if(docSnap.exists()){
     return docSnap.data();
   }
@@ -106,9 +132,13 @@ async function getUser(email){
 }
 
 async function Login (userEmail,password){
-  
+  let error=false;
   const docRef = doc(db, "user",userEmail);
-  const docSnap = await getDoc(docRef);
+  const docSnap = await getDoc(docRef).catch((err)=>{error=true});
+  if(error)
+  {
+    return false;
+  }
   let response;
   
   if (docSnap.exists()) {
@@ -123,29 +153,45 @@ async function Login (userEmail,password){
   return response;
 }
 
-async function addLike(postId){
+async function addLike(postId,useremail){
   // const db = getFirestore();
+  let error=false;
   const docRef = doc(db, "tweets", postId);
-  const docSnap=await getDoc(docRef);
+  const docSnap=await getDoc(docRef).catch((err)=>{error=true});
+  if(error)
+  {
+    return false;
+  }
   if(docSnap.exists())
   {
-    const like=docSnap.data().likes;
+    const {likes,likelist}=docSnap.data();
+    likelist.push(useremail);
     await updateDoc(docRef, {
-      likes:like+1
-  });
+      likes:likes+1,
+      likelist
+  }).catch((err)=>{error=true})
+  if(error)
+  {
+    return false;
+  }
     
 
   }
   // console.log(docRef);
   // Set the "capital" field of the city 'DC'
- 
+ return true;
 
 }
 
 async function getIndividualTweet(id){
   // const db = getFirestore();
+  let error=false;
   const docRef = doc(db, "tweets", id);
-  const docSnap=await getDoc(docRef);
+  const docSnap=await getDoc(docRef).catch((err)=>{error=true});
+  if(error)
+  {
+    return false;
+  }
   if(docSnap.exists())
   {
     return docSnap.data();
@@ -154,23 +200,37 @@ async function getIndividualTweet(id){
 }
 
 async function addcomment(comment,id,useremail){
-  
+  let error=false;
   const docRef=doc(db,"tweets",id);
-  const data=await getDoc(docRef);
+  const data=await getDoc(docRef).catch((err)=>{error=true});
+  if(error)
+  {
+    return false;
+  }
   if(data.exists())
   {
     let array=data.data().comments;
     array=[{comment,useremail},...array];
     await updateDoc(docRef,{
       comments:array
-    })
+    }).catch((err)=>{error=true})
+    if(error)
+  {
+    return false;
   }
+  }
+  return true;
   
 }
 
 async function getProfilePosts(email){
+  let error=false;
   const q = query(collection(db, "tweets"), where("useremail", "==", email));
-  const querySnapshot = await getDocs(q);
+  const querySnapshot = await getDocs(q).catch((err)=>{error=true})
+  if(error)
+  {
+    return false;
+  }
   let data=[];
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
@@ -182,9 +242,14 @@ async function getProfilePosts(email){
 
 
 async function addFollowing(hostemail,useremail){
+  let error=false;
   console.log(hostemail,useremail);
   const docRef=doc(db,"user",hostemail);
-  const docSnap=await getDoc(docRef);
+  const docSnap=await getDoc(docRef).catch((err)=>{error=true});
+  if(error)
+  {
+    return false;
+  }
   if(docSnap.exists()){
     let {followingList, following}=docSnap.data();
     followingList=[useremail,...followingList];
@@ -192,15 +257,26 @@ async function addFollowing(hostemail,useremail){
     await updateDoc(docRef,{
       followingList,
       following
-    })
+    }).catch((err)=>{error=true})
+    if(error)
+  {
+    return false;
+  }
 
 
   }
+  return true;
 }
 async function addFollower(useremail,hostemail){
+  let error=false;
   console.log(useremail);
-  const docRef=doc(db,"user",useremail);
-  const docSnap=await getDoc(docRef);
+  const docRef=doc(db,"user",useremail)
+  
+  const docSnap=await getDoc(docRef).catch((err)=>{error=true});
+  if(error)
+  {
+    return false;
+  }
   if(docSnap.exists()){
     let {followersList, followers}=docSnap.data();
     followersList=[hostemail,...followersList];
@@ -208,10 +284,15 @@ async function addFollower(useremail,hostemail){
     await updateDoc(docRef,{
       followersList,
       followers
-    })
+    }).catch((err)=>{error=true})
+    if(error)
+    {
+      return false;
+    }
 
 
   }
+  return true;
 }
 
 async function removeFollower(hostemail,useremail){
@@ -244,7 +325,7 @@ async function removeFollowing(useremail,hostemail){
 
 async function addAdditionalData(useremail,profile,cover,bio,password){
   const docRef = doc(db,"user",useremail);
-  
+  let error=false;
   if(password!=='')
   {
     await updateDoc(docRef,{
@@ -253,8 +334,14 @@ async function addAdditionalData(useremail,profile,cover,bio,password){
       bio,
       password
 
-    })
+    }).catch((err)=>{error=true})
+    if(error)
+    {
+      return false;
+    }
+    
   }
+  
  
   else
   {
@@ -262,8 +349,14 @@ async function addAdditionalData(useremail,profile,cover,bio,password){
       profile,
       cover,
       bio
-    })
+    }).catch((err)=>{error=true})
+    if(error)
+    {
+      return false;
+    }
+    
   }
+  return true;
 
 }
 
@@ -276,8 +369,6 @@ async function addBookmark(useremail,postId){
     await updateDoc(docRef,{
       bookmarks
     })
-
-    
   }
   return true;
 
@@ -329,6 +420,8 @@ async function follower(useremail){
   
     return [];
 }
+
+
 async function followingfunc(useremail){
   const docRef=doc(db,"user",useremail);
   const docSnap=await getDoc(docRef);
@@ -376,4 +469,37 @@ async function removeBookmark(postId,useremail){
   return true;
 }
 
-export { writeUserData, getTweets, Login, storage, ref, uploadBytes, postTweets, getUsers, addLike, getIndividualTweet, addcomment, getUser, getProfilePosts, addFollower, addFollowing, removeFollower, removeFollowing, addAdditionalData, addBookmark, getBookmarks,follower,followingfunc, deleteTweet, removeBookmark, getBookmarkList};
+
+async function getfromlikelist(postId,useremail){
+  const docRef=doc(db,"tweets",postId);
+  const docSnap=await getDoc(docRef);
+  let response=false;
+  if(docSnap.exists())
+  {
+    const {likelist}=docSnap.data();
+    
+    likelist.forEach((element)=>{
+      if(element===useremail){
+        response=true;
+      }
+    })
+  }
+  return response;
+}
+
+async function unlikePost(postId,useremail){
+  const docRef=doc(db,"tweets",postId);
+  const docSnap=await getDoc(docRef);
+  if(docSnap.exists())
+  {
+    let {likelist,likes}=docSnap.data();
+    likes-=1;
+    likelist=likelist.filter((email)=>email!==useremail);
+    await updateDoc(docRef,{
+      likes,likelist
+    }).catch((err)=>{error=true})
+
+  }
+}
+
+export { writeUserData, getTweets, Login, storage, ref, uploadBytes, postTweets, getUsers, addLike, getIndividualTweet, addcomment, getUser, getProfilePosts, addFollower, addFollowing, removeFollower, removeFollowing, addAdditionalData, addBookmark, getBookmarks,follower,followingfunc, deleteTweet, removeBookmark, getBookmarkList,getfromlikelist,unlikePost};

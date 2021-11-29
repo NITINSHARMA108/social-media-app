@@ -13,7 +13,7 @@ const Sidenav = function() {
         <div className="side-nav">
             
             <ul>
-            <h1>twit-ter</h1>
+            <h1>twitter</h1>
                 <Link to="/" style={{textDecoration:'none',color:'white'}}><li><i className="fas fa-home" /> Home</li></Link>
                 <Link to="/profile" style={{textDecoration:'none',color:'white'}}><li><i className="fas fa-user-alt" /> Profile</li></Link>
                 

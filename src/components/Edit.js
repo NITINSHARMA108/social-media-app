@@ -35,8 +35,8 @@ const Edit = function() {
         e.preventDefault();
         const x=getCookie();
         // console.log(x);
-        let storageRef1; let response1; let url1;
-        let storageRef2; let response2; let url2;
+        let storageRef1; let response1; let url1='';
+        let storageRef2; let response2; let url2='';
         if(data.password!=='')
         {
             if(data.password!==data.cpassword)

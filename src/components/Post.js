@@ -1,20 +1,25 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import {Link} from 'react-router-dom';
 import PropType from 'prop-types';
-import { addLike , addBookmark, removeBookmark } from '../firebase/firebase';
+import { addLike , addBookmark, removeBookmark, unlikePost , getfromlikelist } from '../firebase/firebase';
 import getCookie from './Cookies/getCookie';
 
 const Post = function({useremail,img,content,comments,likes,postId,profile,s}) {
+    const x=getCookie();
+    const [liked,setliked]=useState(false);
+    const [buttonClicked,setButtonclicked]=useState(false);
     const plusLike = async (e,postId) =>{
         e.preventDefault();
-        await addLike(postId);
+        await addLike(postId,x);
+        setButtonclicked(true);
         
+        // window.location.reload();
     }
   
     const bookMarkAdded = async(e)=>{
-        const response=await addBookmark(getCookie(),postId);
+        const response=await addBookmark(x,postId);
         if(response){
-            alert('post added to bookmark')
+            alert('post added to bookmark');
             window.location.reload();
         }
         else
@@ -25,7 +30,7 @@ const Post = function({useremail,img,content,comments,likes,postId,profile,s}) {
 
     const removedBookmark = async(e)=>{
         e.preventDefault();
-        const response= removeBookmark(postId,getCookie())
+        const response= removeBookmark(postId,x)
         if(response){
             window.alert('post removed from bookmark');
             window.location.reload();
@@ -35,6 +40,20 @@ const Post = function({useremail,img,content,comments,likes,postId,profile,s}) {
             window.location.reload();
         }
     }
+    const checkliked =async ()=>{
+        const response=await getfromlikelist(postId,x);
+        setliked(response);
+        console.log(liked);
+    }
+
+    const handleunlike=async()=>{
+        const response=await unlikePost(postId,x);
+        setButtonclicked(true);
+    }
+    useEffect(()=>{
+        checkliked();
+
+    },[])
     
 
     
@@ -50,7 +69,7 @@ const Post = function({useremail,img,content,comments,likes,postId,profile,s}) {
                 {img!=='none' ? <img src={img} alt={useremail}/> : ''}
                 <div className="buttons" style={{display:'flex',justifyContent:'space-between'}}>
                     <Link to={`/post/${postId}`} state={{id:postId}} style={{color:'white',textDecoration:'none'}}><p><i className="fas fa-comment"/>{comments.length}</p></Link>
-                    <p><i className="fas fa-heart" onClick={(e)=>plusLike(e,postId)} />{likes}</p>
+                    {!liked?<p><i className="fas fa-heart" onClick={(e)=>plusLike(e,postId)} />{likes}</p>:<p><i className="fas fa-heart" style={{color:'red'}} onClick={e=>handleunlike(e,postId)}/>{likes}</p>}
                     {s!=='white'?<p><i className="fas fa-bookmark" style={{color:'blue'}}  onClick={e=>removedBookmark()}/></p>:
                     <p><i className="fas fa-bookmark"  onClick={e=>bookMarkAdded(e)} style={{color:'white'}}/></p>
                     }
