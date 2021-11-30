@@ -11,6 +11,7 @@ const Post = function({useremail,img,content,comments,likes,postId,profile,s}) {
 
     const plusLike = async (e,postId) =>{
         e.preventDefault();
+        e.target.style.pointerEvents="none";
         await addLike(postId,x);
         setButtonclicked(true);
         
@@ -19,6 +20,7 @@ const Post = function({useremail,img,content,comments,likes,postId,profile,s}) {
   
     const bookMarkAdded = async(e)=>{
         const response=await addBookmark(x,postId);
+        e.target.style.pointerEvents="none";
         if(response){
             alert('post added to bookmark');
             window.location.reload();
@@ -31,7 +33,8 @@ const Post = function({useremail,img,content,comments,likes,postId,profile,s}) {
 
     const removedBookmark = async(e)=>{
         e.preventDefault();
-        const response= removeBookmark(postId,x)
+        e.target.style.pointerEvents="none";
+        const response= await removeBookmark(postId,x)
         if(response){
             window.alert('post removed from bookmark');
             window.location.reload();
@@ -47,7 +50,9 @@ const Post = function({useremail,img,content,comments,likes,postId,profile,s}) {
         console.log(liked);
     }
 
-    const handleunlike=async()=>{
+    const handleunlike=async(e)=>{
+        e.preventDefault();
+        e.target.style.pointerEvents="none";
         const response=await unlikePost(postId,x);
         setButtonclicked(false);
         window.location.reload();
@@ -72,10 +77,10 @@ const Post = function({useremail,img,content,comments,likes,postId,profile,s}) {
                 {img!=='none' ? <img src={img} alt={useremail}/> : ''}
                 <div className="buttons" style={{display:'flex',justifyContent:'space-between'}}>
                     <Link to={`/post/${postId}`} state={{id:postId}} style={{color:'white',textDecoration:'none'}}><p><i className="fas fa-comment"/>{comments.length}</p></Link>
-                    {!liked?<p><i className="fas fa-heart" onClick={(e)=>plusLike(e,postId)} />{likes}</p>:<p><i className="fas fa-heart" style={{color:'red'}} onClick={e=>handleunlike(e,postId)}/>{likes}</p>}
-                    {s!=='white'?<p><i className="fas fa-bookmark" style={{color:'blue'}}  onClick={e=>removedBookmark()}/></p>:
-                    <p><i className="fas fa-bookmark"  onClick={e=>bookMarkAdded(e)} style={{color:'white'}}/></p>
-                    }
+                    {!liked?<p><i className="fas fa-heart" onClick={(e)=>plusLike(e,postId)} />{likes}</p>:<p><i className="fas fa-heart" style={{color:'red'}} onClick={e=>handleunlike(e)}/>{likes}</p>}
+                    { (s!=='white'?<p><i className="fas fa-bookmark" style={{color:'blue'}}  onClick={e=>removedBookmark(e)}/></p>:
+                    <p><i className="fas fa-bookmark"  onClick={e=>bookMarkAdded(e)} style={{color:'white'}}/></p>)
+                }
                     
                 </div>
             </div>

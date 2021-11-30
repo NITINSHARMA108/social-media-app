@@ -16,7 +16,7 @@ const Home = function() {
         if(!checkCookie())
         {
         navigate('/signup');
-        console.log('in here');
+        
         
         }
         else{

@@ -17,6 +17,7 @@ const Users = function({users}) {
     }
     return (
         <div className="users">
+            <h1 style={{textAlign:'center',color:'white'}}>Users</h1>
             {users.map((user)=>{
                 if(user.email!==x)
                 {

@@ -35,38 +35,59 @@ const SignUp = function() {
             window.alert('enter all fields');
             return ;
         }
+        if(userData.password.length<=6)
+        {
+            window.alert('password is too short \n length should be greater 6 characters');
+            return;
+        }
         if(userData.password!==userData.cpassword){
             window.alert('passwords are not matching');
             return;
         }
+        const regx=/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-z]{2,5}$/;
+        console.log(regx.test(userData.email));
+        if(!regx.test(userData.email))
+        {
+            window.alert('email is not allowed');
+            return ;
+        } 
         const date=userData.DOB;
         // console.log(date);
         const year=date.split('-')[0];
+        
+        
         const today=new Date();
         const currYear=today.getFullYear();
+        if(year<1800 || year>currYear)
+        {
+            window.alert('year value should be greater than 1800 and less than current year');
+            return ;
+        }
+        
         if(currYear-year<=17)
         {
             alert('you are not eligible to open an account .User must be 18 years old');
             return ;
         }
-        if(userData.password.length<=6)
-        {
-            alert('password is too short length should <6');
-            return;
-        }
+       
 
         const response=await writeUserData(userData);
        // console.log(response);
 
-        if(!response){
+        if(response.error){
             alert('Some error occured');
             
         }
-        else
-        {
-            navigate('/signin');
-        }
         
+        else
+        if(response.result)
+        {
+        navigate('/signin');
+        }
+        else{
+            window.alert('user is already registered');
+        }
+    
     }
     const handleChanges = (e)=>{
         const {name} = e.target;
@@ -87,7 +108,6 @@ const SignUp = function() {
                 <h1>Happening now</h1>
                 <h2>Join Twitter Today</h2>
                 <form>
-                   
                     <button type="button" style={{backgroundColor:'red',color:'white'}} onClick={(e)=>handleSignIn(e)}>Sign up with email</button>
                     <p>By signing up, you agree to the Terms of Service and Privacy Policy, including Cookie Use.</p>
                     <h3>Already Have an Account ?</h3>

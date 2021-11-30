@@ -215,6 +215,7 @@ textarea {
 .edit {
   width: 40%;
   background-color: black;
+  overflow-y: auto;
   color: grey;
 }
 .edit input {
@@ -253,13 +254,13 @@ textarea {
 }
 .single-tweet textarea {
   background-color: white;
-  color: grey;
+  color: black;
   width: 80%;
   margin: auto;
 }
 .single-tweet button {
-  width: 100px;
-  margin-left: auto;
+  width: 20%;
+  margin-left: 40%;
   background-color: #00ff00;
   border-radius: 5px;
 }

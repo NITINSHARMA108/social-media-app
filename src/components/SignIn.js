@@ -17,14 +17,20 @@ const SignIn = function() {
         e.preventDefault();
         const response = await Login(data.email,data.password);
         // console.log(response);
-        if(response){
+        if(response.error){
             // creating cookie
-            createCookie(data.email);
-            navigate('/');
-
+            window.alert('some error occured');
+            
+        }
+        else if(response.result===false){
+            window.alert('user is not registered Please Sign Up');
+        }
+        else if(response.result===''){
+            alert('password incorrect');
         }
         else{
-            alert('unsuccessful login');
+            createCookie(response.result);
+            navigate('/');
         }
     }
     return (

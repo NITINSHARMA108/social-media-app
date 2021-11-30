@@ -7,7 +7,7 @@ import getCookie from './Cookies/getCookie';
 const Usercard = function({user}) {
     const x=getCookie();
     const addtoFollowingAndFollower = async (e) =>{
-        
+        e.target.style.pointerEvents="none";
         await addFollowing(x, user.email);
         await addFollower(user.email, x);
        // document.querySelector(`.${user.email}`).innerHTML="following";
@@ -16,6 +16,7 @@ const Usercard = function({user}) {
 
     }
     const removeFollowerFollowing=async(e)=>{
+        e.target.style.pointerEvents="none";
         await removeFollowing(user.email,x);
         await removeFollower(x,user.email);
         window.location.reload();

@@ -50,6 +50,7 @@
         "react/forbid-prop-types":"off",
         "jsx-a11y/label-has-associated-control":"off",
         "react/prop-types":"off",
-        "eqeqeq":"off"
+        "eqeqeq":"off",
+        "no-useless-escape":"off"
        }
 }

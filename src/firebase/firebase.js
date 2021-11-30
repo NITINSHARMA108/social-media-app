@@ -34,21 +34,21 @@ async function writeUserData( userdata) {
   const docSnap = await getDoc(docRef).catch((err)=>{error=true});
   if(error)
   {
-    return false;
+    return {error:true,result:false}
   }
   if (docSnap.exists()) {
-    console.log("Document data:", docSnap.data());
-    return false;
+    // console.log("Document data:", docSnap.data());
+    return {error:false,result:false}
   } 
     // doc.data() will be undefined in this case
-  console.log("No such document!");
+  // console.log("No such document!");
   const response =await setDoc(doc(db, "user", userdata.email), 
     userdata).catch((err)=>{error=true})
   if(error)
   {
-    return false;
+    return {error:true,result:false}
   }
-  return true;
+  return {error:false,result:true}
 }
 
 async function getTweets(){
@@ -90,7 +90,8 @@ async function postTweets(object){
       comments:object.comment,
       username:object.username,
       useremail:object.useremail,
-      image
+      image,
+      likelist:object.likelist
     });
     return response;
   }
@@ -137,20 +138,20 @@ async function Login (userEmail,password){
   const docSnap = await getDoc(docRef).catch((err)=>{error=true});
   if(error)
   {
-    return false;
+    return {error:true,result:false}
   }
   let response;
   
   if (docSnap.exists()) {
       if(password===docSnap.data().password){
         response=docSnap.data();
+        return {error:false,result:response.email}
       }
-      else{
-        response=false;
-      }
+      return {error:false,result:''};
   }
+  return {error:false,result:false}
   
-  return response;
+  
 }
 
 async function addLike(postId,useremail){
@@ -456,7 +457,9 @@ async function removeBookmark(postId,useremail){
   if(docSnap.exists())
   {
     let {bookmarks}=docSnap.data();
+    console.log(bookmarks)
     bookmarks=bookmarks.filter((id)=>id!==postId);
+    console.log(bookmarks);
     await updateDoc(docRef,{
       bookmarks
     }).catch((err)=>{error=true})

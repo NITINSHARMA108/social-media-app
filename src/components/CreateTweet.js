@@ -16,7 +16,8 @@ const CreateTweet = function() {
         likes:0,
         comment:[],
         img:'',
-        useremail:getCookie()
+        useremail:getCookie(),
+        likelist:[]
         
     })
     
@@ -39,6 +40,7 @@ const CreateTweet = function() {
     const submitTweet = async (e)=>{
         // setTweet(()=>({...tweet,useremail:getCookie()}));
         e.preventDefault();
+        e.target.style.pointerEvents="none";
         if(imgfile!=='')
         {
             const storageRef = ref(storage,`posts/${tweet.postId}` );
