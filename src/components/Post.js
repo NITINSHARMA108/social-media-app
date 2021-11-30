@@ -76,7 +76,7 @@ const Post = function({useremail,img,content,comments,likes,postId,profile,s}) {
                 <p>{content}</p>
                 {img!=='none' ? <img src={img} alt={useremail}/> : ''}
                 <div className="buttons" style={{display:'flex',justifyContent:'space-between'}}>
-                    <Link to={`/post/${postId}`} state={{id:postId}} style={{color:'white',textDecoration:'none'}}><p><i className="fas fa-comment"/>{comments.length}</p></Link>
+                    <Link to="/tweet" state={{id:postId}} style={{color:'white',textDecoration:'none'}}><p><i className="fas fa-comment"/>{comments.length}</p></Link>
                     {!liked?<p><i className="fas fa-heart" onClick={(e)=>plusLike(e,postId)} />{likes}</p>:<p><i className="fas fa-heart" style={{color:'red'}} onClick={e=>handleunlike(e)}/>{likes}</p>}
                     { (s!=='white'?<p><i className="fas fa-bookmark" style={{color:'blue'}}  onClick={e=>removedBookmark(e)}/></p>:
                     <p><i className="fas fa-bookmark"  onClick={e=>bookMarkAdded(e)} style={{color:'white'}}/></p>)

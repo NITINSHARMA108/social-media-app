@@ -62,6 +62,7 @@ const Tweet = function() {
             <textarea type="text" value={comment} onChange={e=>handlecomment(e)}/><br />
             <button type="button" onClick={e=>submitcomment(e)}>Add</button>
             <h3 style={{color:'white',textAlign:'center'}}>Comments</h3>
+            {data.comments.length===0?<p style={{textAlign:'center'}}>no comments</p>:''}
             {data.comments.map((data)=>(
                 <div className="comment">
                 <p style={{fontWeight:'bold'}}>{data.useremail}</p>

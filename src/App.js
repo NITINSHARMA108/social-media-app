@@ -25,10 +25,10 @@ const App = function() {
       <Route exact path="/profile"element={<Profile name="Nitin" followers="20" following="40" email="biyalanitin786@gmail.com" posts={[]} />} />
       <Route exact path="/saved" element={<Saved />} />
       <Route exact path="/edit" element={<Edit />} />
-      <Route exact path="/post/:id" element={<Tweet />} />
+      <Route exact path="/tweet" element={<Tweet />} />
       <Route exact path="/showFollowers" element={<ShowFollowers />} />
       <Route exact path="/showFollowing" element={<ShowFollowing />} />
-      <Route exact path="/profile/:id" element={<NotHost/>} />
+      <Route exact path="/user" element={<NotHost/>} />
         
   
       

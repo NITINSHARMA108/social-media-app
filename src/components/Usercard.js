@@ -42,7 +42,7 @@ const Usercard = function({user}) {
                 
             </div>
             <div className="two">
-                <Link style={{color:'white'}} to={`/profile/${user.email}`} state={{email:user.email}}><div>{user.name}</div></Link>
+                <Link style={{color:'white'}} to="/user" state={{email:user.email}}><div>{user.name}</div></Link>
                 {findX(user.followersList)?
                 <button type="button" className="follow-button" onClick={e=>addtoFollowingAndFollower(e)}>Follow</button> : 
                 <button type="button" className="unfollow-button" onClick={e=>removeFollowerFollowing(e)}>UnFollow</button>
